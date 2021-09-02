@@ -1,0 +1,29 @@
+steps:
+
+- id: 'Pull cloudbuild-meta files'
+  name: 'gcr.io/cloud-builders/git'
+  args: ['clone', 'https://github.com/dlouvier/test-cloudbuild-meta.git']
+
+# - id: 'Test'
+#   name: 'ubuntu'
+#   args: 
+#     - bash
+#     - -c
+#     - ls -la
+
+- id: 'Build'
+  name: 'gcr.io/cloud-builders/gcloud'
+  args: [
+      'builds', 
+      'submit',
+      '--config=test-cloudbuild-meta/cloudbuild.build.java.yaml',
+      '.'
+  ]
+  waitFor: ['-']
+
+- id: 'Post-Build'
+  name: 'ubuntu'
+  args: 
+    - bash
+    - -c
+    - echo "This goes at the end"
